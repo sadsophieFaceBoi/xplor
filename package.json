@@ -2,7 +2,7 @@
   "name": "xplor",
   "private": true,
   "version": "0.0.0",
-  "main": "dist/main.js",
+  "main": "dist/electron/main.js",
   "scripts": {
     "dev": "concurrently \"vite\" \"cross-env DEV= tsc-watch -p tsconfig-electron.json --onSuccess \\\"electron .\\\"\"",
     "preview": "vite build && tsc -p tsconfig-electron.json && cross-env PREVIEW= electron .",

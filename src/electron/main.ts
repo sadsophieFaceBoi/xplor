@@ -5,12 +5,12 @@ import { join } from "path";
 
 // 1. this import won't work yet, but we will fix that next
 import "./api";
-import { register } from "./console/ptyterminal";
+ import { register } from "./console/ptyterminal";
+
 
 // 2. simple check if we are running in dev / preview / production
 const isDev = process.env.DEV != undefined;
 const isPreview = process.env.PREVIEW != undefined;
-
 function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 800,
@@ -36,7 +36,7 @@ function createWindow() {
     mainWindow.loadFile("dist/index.html");
   }
 
-  register(mainWindow);
+   register(mainWindow);
 }
 
 // This method will be called when Electron has finished
@@ -58,3 +58,6 @@ app.whenReady().then(() => {
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();
 });
+
+
+

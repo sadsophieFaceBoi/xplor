@@ -2,6 +2,11 @@
 
 import { contextBridge, ipcRenderer } from "electron";
 import { IPtyEvents } from "./console/IPty";
+import * as os from 'os';
+import { env } from "process";
+import { get } from "http";
+import { ISystem } from "../types/system";
+
 
 export const backend = {
   nodeVersion: async (msg: string): Promise<string> =>
@@ -30,4 +35,20 @@ export const ptyApi: IPtyEvents = {
   
 
 };
+declare global {
+    interface Window {
+        system: {
+            getSystemInfo: () => Promise<ISystem>;
+        };
+       
+    }
+}
+contextBridge.exposeInMainWorld("system", {
+    getSystemInfo:async (): Promise<ISystem> => {
+   
+        return await ipcRenderer.invoke("get-system-info");
+    }
+});
 contextBridge.exposeInMainWorld("terminal", ptyApi);
+
+

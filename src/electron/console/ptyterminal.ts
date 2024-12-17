@@ -3,6 +3,7 @@ import {BrowserWindow,  contextBridge,  ipcMain, IpcMainInvokeEvent, ipcRenderer
 import { IPtyEvents } from './IPty';
 import * as os from 'os';
 import { execSync } from 'child_process';
+import { env } from 'process';
 const shell =   "C:\\Program Files\\Git\\bin\\bash.exe";
 const cols = 80; // default column size
 const rows = 24; // default row size
@@ -42,8 +43,11 @@ class PtyTerminal {
         this.ptyProcess.write('export HISTCONTROL=ignorespace\rclear\r');
     
         this.ptyProcess.onData((data) => {
-            
-            this.sendDataToTerminal(data);
+           if (this.mainWindow) {
+            this.mainWindow.webContents.send(`terminal-output-${this.id}`, data);
+              }
+
+            // this.sendDataToTerminal(data);
         });
         
         ipcMain.on(`write-to-terminal-${this.id}`, (event: IpcMainInvokeEvent, data: string) => {
@@ -56,17 +60,16 @@ class PtyTerminal {
            
         });
       }
+   
    private sendDataToTerminal(data: string) {
-           console.log('skipcount:',this.skipcount);
-          
+
             if (this.mainWindow) {
-                console.log(this.workingDirectoryRequested);
                 if (this.workingDirectoryRequested ) {
                     if (data.toString().trim() && data.toString().trim().includes('/')
                          && !data.includes('~')
                          && !data.includes('[')
                         &&!this.directorySent) {
-                        console.log('sending working directory:', data); 
+                
                         this.mainWindow.webContents.send(`working-directory-${this.id}`, data);
                         setTimeout(() => {
                             this.directorySent=true;
@@ -76,8 +79,6 @@ class PtyTerminal {
                    return;
                 } 
                 else {
-                   
-                        console.log('sending terminal output:', data);
                         this.mainWindow.webContents.send(`terminal-output-${this.id}`, data);
                    
                 }
@@ -88,7 +89,7 @@ class PtyTerminal {
         this.workingDirectoryRequested = true;
        this.directorySent=false;
             this.skipcount = 0;
-            console.log('getting working directory');
+       
         setTimeout(() => {
             this.ptyProcess?.write(` pwd\r`);
         }, 20);
