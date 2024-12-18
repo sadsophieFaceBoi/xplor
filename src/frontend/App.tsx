@@ -1,11 +1,10 @@
-import { useCallback, useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import { TerminalComponent } from './terminal'
+import React, { useState, useCallback } from 'react';
+import { DirectoryProvider, useDirectory } from './context/DirectoryContext';
+import {TerminalComponent} from './components/terminal';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
   const [nodeVersion, setNodeVersion] = useState<string | undefined>(undefined);
 
   const updateNodeVersion = useCallback(
@@ -14,15 +13,30 @@ function App() {
   );
 
   return (
-    <>
+    <DirectoryProvider>
       <div>
-        
-      
-        
+        <DirectoryChanger />
+        {/* Other components can be added here */}
       </div>
       <TerminalComponent />
-    </>
-  )
+    </DirectoryProvider>
+  );
 }
 
-export default App
+const DirectoryChanger: React.FC = () => {
+  const { setCurrentDirectory,currentDirectory,sender } = useDirectory();
+ 
+  const changeDirectory = () => {
+    setCurrentDirectory('C:\\Users\\andre\\source\\repos\\jsas\\jsas_app', 'App');
+  };
+
+  return (
+    <div>
+      <p>Current Path: {currentDirectory}</p>
+      <button onClick={changeDirectory}>Change Directory</button>
+    </div>
+ 
+  );
+};
+
+export default App;

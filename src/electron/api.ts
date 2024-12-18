@@ -31,7 +31,7 @@ export const system = {
 console.log('api loaded');
 ipcMain.handle("get-system-info", 
   (event: IpcMainInvokeEvent): ISystem => {
-
+    
   console.log(system);
   return system;
   });
