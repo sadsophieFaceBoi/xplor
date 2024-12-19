@@ -1,11 +1,10 @@
 {
-    "extends": "./tsconfig.json",
-    "compilerOptions": {
-      "module": "CommonJS",
-      "outDir": "dist",
-      "noEmit": false
-    },
-    "include": [
-      "src/electron"
-    ],
-  }
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "target": "ES2015",
+    "module": "commonjs",
+    "outDir": "dist",
+    "noEmit": false
+  },
+  "include": ["src/electron/**/*"]
+}

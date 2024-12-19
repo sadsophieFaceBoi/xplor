@@ -1,7 +1,8 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { DirectoryProvider, useDirectory } from './context/DirectoryContext';
 import {TerminalComponent} from './components/terminal';
 import './App.css';
+import { convertWindowsPathToUnixPath } from '../utils/file-utils';
 
 function App() {
   const [count, setCount] = useState(0);
@@ -25,14 +26,18 @@ function App() {
 
 const DirectoryChanger: React.FC = () => {
   const { setCurrentDirectory,currentDirectory,sender } = useDirectory();
- 
+  const [unixPath, setUnixPath] = useState<string | undefined>(undefined);
   const changeDirectory = () => {
     setCurrentDirectory('C:\\Users\\andre\\source\\repos\\jsas\\jsas_app', 'App');
   };
-
+ useEffect(() => {
+  const p=convertWindowsPathToUnixPath(currentDirectory);
+  setUnixPath(p);
+  }, [currentDirectory]);
   return (
     <div>
       <p>Current Path: {currentDirectory}</p>
+      <p>Unix Path: {unixPath}</p>
       <button onClick={changeDirectory}>Change Directory</button>
     </div>
  
