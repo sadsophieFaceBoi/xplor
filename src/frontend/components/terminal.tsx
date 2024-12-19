@@ -88,9 +88,11 @@ export const TerminalComponent = () => {
         
     const checkForDirectoryChange=(data: string) =>{
         //search pattern should be [32muser@computer
-        const pattern = `\\[32m\\s*${userComputer}`;
+        const pattern = `\\[32m\\s*.*${userComputer}`;
         const regex = new RegExp(pattern, 'i');
+       
         if (regex.test(data) && userComputer !== '') {
+            console.log('checking for directory change:',data);
             const fields = data.split('[');
             //get the field that starts with 33m
             let field = fields.find(f => f.startsWith('33m'));
@@ -109,6 +111,7 @@ export const TerminalComponent = () => {
     }
 
     return <div>
+    <button onClick={()=>window.terminal.writeToTerminal('ls\r',termId)}>List Files</button>
     <button onClick={loadSysInfo}>Load System Info</button>
      <div id="terminal" className="xterm" ref={terminalRef} style={{textAlign:"left"}}  />
     </div>;
