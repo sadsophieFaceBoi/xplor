@@ -111,8 +111,7 @@ export const TerminalComponent = () => {
     }
 
     return <div>
-    <button onClick={()=>window.terminal.writeToTerminal('ls\r',termId)}>List Files</button>
-    <button onClick={loadSysInfo}>Load System Info</button>
+    
      <div id="terminal" className="xterm" ref={terminalRef} style={{textAlign:"left"}}  />
     </div>;
 };
