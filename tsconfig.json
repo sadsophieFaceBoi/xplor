@@ -1,0 +1,19 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.node.json" },
+    { "path": "./tsconfig.web.json" }
+  ],
+  "include": [
+    "src/global.d.ts",
+    "src/**/*"
+  ],
+  "compilerOptions": {
+    
+    "baseUrl": "./",
+  "paths": {
+  
+    "types/*": ["src/types/*"],
+  }
+  }
+}
