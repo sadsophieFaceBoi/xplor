@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Split from 'react-split';
-
+import { TableHeaderCell, TableSortDirection } from '@fluentui/react-components';
 
 import { DirectoryInfo, FileInfo } from 'types/file-models';
 import { fileRendererApi } from './file-api';
@@ -14,26 +14,31 @@ const FileExplorer = () => {
   const [directories, setDirectories] = useState<DirectoryInfo[]>([])
   const [filteredFiles, setFilteredFiles] = useState<FileInfo[]>([])
   const [filteredDirectories, setFilteredDirectories] = useState<DirectoryInfo[]>([])
+  const [sortColumn, setSortColumn] = useState<string | null>(null);
+  const [sortDirection, setSortDirection] = useState<TableSortDirection>('ascending');
   //loads the contents of the current directory
   const loadDirectoryContents = async (directory: string) => {
-    const [files, directories] = await Promise.all([
+    const [f, d] = await Promise.all([
       fileRendererApi.getFilesInDirectory(directory),
       fileRendererApi.getSubDirectories(directory)
     ])
-    setFiles(files)
-    setDirectories(directories)
-    setSearchTerm('')
-    //setFilteredItems()
+    let changed:boolean=false
+    if (JSON.stringify(f) !== JSON.stringify(files)) {
+      setFiles(f);
+      changed=true
+    }
+    if (JSON.stringify(d) !== JSON.stringify(directories)) {
+      setDirectories(d);
+      changed=true
+    }
   }
   //called when the current directory
   useEffect(() => {
-    if(sender === 'explorer'){
-    
+    if(sender === 'explorer'){    
       return
     }
-
-   
     if (!currentDirectory) return
+    setSearchTerm('')
     loadDirectoryContents(currentDirectory)
     const interval = setInterval(() => {
        loadDirectoryContents(currentDirectory)
@@ -48,11 +53,8 @@ const FileExplorer = () => {
     }
 
   const setFilteredItems = () => {
-    const d = directories.filter((dir) =>
-    dir.name.toLowerCase().includes(searchTerm.toLowerCase()));
-    const f = files.filter((file) =>
-      file.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const d = directories.filter((dir) =>dir.name.toLowerCase().includes(searchTerm.toLowerCase()));
+    const f = files.filter((file) =>file.name.toLowerCase().includes(searchTerm.toLowerCase()));
     setFilteredDirectories(d);
     setFilteredFiles(f);
   };
@@ -60,9 +62,23 @@ const FileExplorer = () => {
     setSearchTerm(e.target.value);
   };
 
+  const handleSort = (column: string) => {
+    if (sortColumn === column) {
+      setSortDirection(sortDirection === 'ascending' ? 'descending' : 'ascending');
+    } else {
+      setSortColumn(column);
+      setSortDirection('ascending');
+    }
+  };
 
-
-
+  const sortedFiles = [...filteredFiles].sort((a, b) => {
+    if (!sortColumn) return 0;
+    const aValue = a[sortColumn];
+    const bValue = b[sortColumn];
+    if (aValue < bValue) return sortDirection === 'ascending' ? -1 : 1;
+    if (aValue > bValue) return sortDirection === 'ascending' ? 1 : -1;
+    return 0;
+  });
 
 const moveFile = (fileName, targetDirectory) => {
   // Implement file move logic here
@@ -76,7 +92,21 @@ const deleteFile = (fileName) => {
   // Implement file delete logic here
 };
 
-
+const getFileSizeString = (size) => {
+  if (size < 1024) {
+    return '<1 KB';
+  }
+  //if greater than 1024 kb convert to MB
+  if (size < 1024 * 1024) {
+    return (size / 1024).toFixed(2) + ' KB';
+  }
+  //if greater than 1024 MB convert to GB
+  if (size < 1024 * 1024 * 1024) {
+    return (size / (1024 * 1024)).toFixed(2) + ' MB';
+  }
+  //if greater than 1024 GB convert to TB
+  return (size / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
+}
   return (
    
       <div className="flex flex-col flex-grow h-full w-full m-2 p-2">
@@ -112,19 +142,29 @@ const deleteFile = (fileName) => {
             </div>
             <div  >
               <h1>Files</h1>
-              <Table >
-                <TableHeader>
-                  <TableRow>
-                    <TableCell>Name</TableCell>
-                    <TableCell>Size</TableCell>
-                    <TableCell>Date Modified</TableCell>
-                  </TableRow>
+              <Table sortable size='medium'  >
+                
+              
+                
+                <TableHeader className='bg-stone-700' >
+                    <TableRow>
+                    <TableHeaderCell  onClick={() => handleSort('name')} 
+                    className='hover:bg-blue-200 hover:text-slate-900 hover:cursor-pointer w-3/5' >
+                       Name {sortColumn === 'name' && (sortDirection === 'ascending' ? '↑' : '↓')}
+                    </TableHeaderCell>
+                    <TableHeaderCell onClick={() => handleSort('size')} className='hover:bg-blue-200 hover:text-slate-900 hover:cursor-pointer' style={{ flex: 1 }}>
+                      Size {sortColumn === 'size' && (sortDirection === 'ascending' ? '↑' : '↓')}
+                    </TableHeaderCell>
+                    <TableHeaderCell onClick={() => handleSort('dateModified')} className='hover:bg-blue-200 hover:text-slate-900 hover:cursor-pointer' style={{ flex: 1 }}>
+                      Date Modified {sortColumn === 'dateModified' && (sortDirection === 'ascending' ? '↑' : '↓')}
+                    </TableHeaderCell>
+                    </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredFiles.map((file) => (
+                  {sortedFiles.map((file) => (
                     <TableRow key={file.name} >
-                      <TableCell>{file.name}</TableCell>
-                      <TableCell>{file.size < 1024 ? '<1 KB' : (file.size / 1024).toFixed(2) + ' KB'}</TableCell>
+                      <TableCell className='break-words'>{file.name}</TableCell>
+                      <TableCell>{getFileSizeString(file.size)}</TableCell>
                       <TableCell>
                         {file.dateModified.toLocaleDateString()} {file.dateModified.toLocaleTimeString()}
                       </TableCell>
