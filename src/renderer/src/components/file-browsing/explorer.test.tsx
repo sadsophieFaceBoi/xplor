@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/react';
-import Explorer from './Explorer';
+import Explorer from './org';
 
 describe('Explorer Component', () => {
     it('renders correctly', () => {

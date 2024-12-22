@@ -44,25 +44,10 @@ class PtyTerminal {
       this.ptyProcess?.write(data)
     })
 
-    ipcMain.on(`get-working-directory-${this.id}`, () => {
-      this.getWorkingDirectory()
-    })
+   
   }
 
-  private getWorkingDirectory(): void {
-    this.workingDirectoryRequested = true
-    this.directorySent = false
-
-    setTimeout(() => {
-      this.ptyProcess?.write(` pwd\r`)
-    }, 20)
-    const interval = setInterval(() => {
-      if (this.directorySent) {
-        this.workingDirectoryRequested = false
-        clearInterval(interval)
-      }
-    }, 200)
-  }
+ 
 }
 export function register(w: BrowserWindow): void {
   mainWindow = w

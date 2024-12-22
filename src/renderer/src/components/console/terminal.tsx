@@ -26,18 +26,18 @@ export const TerminalComponent: React.FC = () => {
   useEffect(() => {
     if (terminal) return
     loadSysInfo()
-    const t = new Terminal({ cols: 80 })
     
-    setTerminal(t)
   }, [])
   useEffect(() => {
     if (terminal && sender !== 'terminal') {
+      console.log('setting working directory:', currentDirectory)
       const unixPath = convertWindowsPathToUnixPath(currentDirectory)
       //replace the homedir with ~
       let homePath = systemInfo?.homedir || ''
       homePath = convertWindowsPathToUnixPath(homePath)
       const updatedPath = unixPath.replace(homePath, '~')
-      ptyApi.writeToTerminal(`cd ${updatedPath}\r`, termId)
+      console.log('setting :', currentDirectory)
+      ptyApi.writeToTerminal(` cd ${updatedPath}\r`, termId)
       directoryChangedExternally = true
     }
   }, [currentDirectory, terminal, sender])
@@ -48,6 +48,14 @@ export const TerminalComponent: React.FC = () => {
     const uMac = `${d.user}@${d.computer}`
     setUserComputer(uMac)
   }
+  //load the terminal when the system info is loaded
+  useEffect(() => {
+    if (!systemInfo) return
+    if (terminal) return
+    const t = new Terminal({ cols: 80 })
+    
+    setTerminal(t)
+  }, [systemInfo])
   useEffect(() => {
     if (loaded) return
     initTerminal()
@@ -59,7 +67,7 @@ export const TerminalComponent: React.FC = () => {
   }
   const initTerminal = async (): Promise<void> => {
     const fitAddon = new FitAddon()
-    console.log('init terminal')
+
     if (terminal) {
       terminal.loadAddon(fitAddon)
       terminal.clear()
@@ -69,11 +77,11 @@ export const TerminalComponent: React.FC = () => {
       terminal?.open(terminalRef.current)
       fitAddon.fit()
       terminal?.onData((data: string) => {
-        console.log('writing to pty terminal')
+     
         ptyApi.writeToTerminal(data, id)
       })
       ptyApi.receive(`terminal-output-${id}`, (data) => {
-        console.log('received data:')
+
         writeStreamToTerminal(data?.toString() || '')
       })
       setLoaded(true)
@@ -82,7 +90,7 @@ export const TerminalComponent: React.FC = () => {
 
   const writeStreamToTerminal = (data: string): void => {
     if (terminal) {
-      console.log('writing to ui terminal')
+   
       terminal.write(data)
       checkForDirectoryChange(data)
     }
@@ -92,22 +100,43 @@ export const TerminalComponent: React.FC = () => {
     //search pattern should be [32muser@computer
     const pattern = `\\[32m\\s*.*${userComputer}`
     const regex = new RegExp(pattern, 'i')
+   
+    setTimeout(() => {
 
-    if (regex.test(data) && userComputer !== '') {
-
-      const fields = data.split('[')
-      //get the field that starts with 33m
-      let field = fields.find((f) => f.startsWith('33m'))
-      if (!field) {
-        return
+      if (regex.test(data) && userComputer !== '') {
+       
+        const fields = data.split('[')
+        //get the field that starts with 33m
+        let field = fields.find((f) => f.startsWith('33m'))
+        if (!field) {
+          return
+        }
+        field = field.split('[')[0].replace('', '').replace('33m', '').trim()
+        const path = field
+        const homePath = systemInfo?.homedir || ''
+        const updatedPath = path.replace(/^~/, homePath).replace(/\//g, '\\').replace('$', '').trim()
+      
+        setWorkingDirectory(updatedPath)
       }
-      field = field.split('[')[0].replace('', '').replace('33m', '').trim()
-      const path = field
-      const homePath = systemInfo?.homedir || ''
-      const updatedPath = path.replace(/^~/, homePath).replace(/\//g, '\\').replace('$', '').trim()
-      console.log('updated path:', updatedPath)
-      setWorkingDirectory(updatedPath)
-    }
+      else {
+   
+      }
+    }, 200)
+    // if (regex.test(data) && userComputer !== '') {
+    //   console.log('found user computer:', userComputer)
+    //   const fields = data.split('[')
+    //   //get the field that starts with 33m
+    //   let field = fields.find((f) => f.startsWith('33m'))
+    //   if (!field) {
+    //     return
+    //   }
+    //   field = field.split('[')[0].replace('', '').replace('33m', '').trim()
+    //   const path = field
+    //   const homePath = systemInfo?.homedir || ''
+    //   const updatedPath = path.replace(/^~/, homePath).replace(/\//g, '\\').replace('$', '').trim()
+    //   console.log('updated path:', updatedPath)
+    //   setWorkingDirectory(updatedPath)
+    // }
   }
 
   return (

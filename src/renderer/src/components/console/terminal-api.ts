@@ -1,6 +1,6 @@
 export const ptyApi: IPtyEvents = {
   writeToTerminal: (data: string, id: number) => {
-    console.log('write to terminal:', id)
+
     window.electron.ipcRenderer.send(`write-to-terminal-${id}`, data)
   },
   receive: (channel: string, func: (...args: unknown[]) => void) => {
@@ -12,6 +12,6 @@ export const ptyApi: IPtyEvents = {
   },
   getWorkingDirectory: (id: number) => {
     window.electron.ipcRenderer.send(`get-working-directory-${id}`)
-    console.log('get working directory for terminal:', id)
+
   }
 }

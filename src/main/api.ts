@@ -12,7 +12,6 @@ ipcMain.handle('node-version', (event: IpcMainInvokeEvent, msg: string): string 
   return process.versions.node
 })
 ipcMain.handle('get-system-info', (): ISystem => {
-  console.log(system)
   return system
 })
 

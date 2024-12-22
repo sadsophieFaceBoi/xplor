@@ -2,10 +2,12 @@ import { DirectoryInfo, FileInfo, IFileApi } from "../types/file-models"
 import * as fs from 'fs';
 import * as path from 'path';
 export const convertWindowsPathToUnixPath = (windowsPath: string): string => {
+  
   const unixPath = windowsPath
     .replace(/\\/g, '/')
     .replace(/^([a-zA-Z]):/, '/$1')
     .toLowerCase()
+    console.log('unixPath', unixPath)
   return unixPath
 }
 //add a method to convert a unix path to a windows path
@@ -20,7 +22,6 @@ export const convertUnixPathToWindowsPath = (unixPath: string): string => {
     const directories: DirectoryInfo[] = [];
 
     const items = fs.readdirSync(directoryPath, { withFileTypes: true });
-
     items.forEach(item => {
         if (item.isDirectory()) {
             const fullPath = path.join(directoryPath, item.name);
@@ -31,7 +32,7 @@ export const convertUnixPathToWindowsPath = (unixPath: string): string => {
             });
         }
     });
-
+   // console.log('directories', directories)
     return Promise.resolve(directories);
 };
 
