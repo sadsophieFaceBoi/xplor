@@ -110,7 +110,6 @@ const getFileSizeString = (size) => {
   return (
    
       <div className="flex flex-col flex-grow h-full w-full m-2 p-2">
-        <h1>File Explorer</h1>
         <input
                 type="text"
                 placeholder="Search..."
@@ -127,9 +126,7 @@ const getFileSizeString = (size) => {
             className='flex-grow flex h-full w-full'
         
           >
-            <div>
-              <h1>Directories</h1>
-              
+            <div>              
               {filteredDirectories.map((dir) => (
                 <div
                   key={dir.name}
@@ -141,11 +138,7 @@ const getFileSizeString = (size) => {
               ))}
             </div>
             <div  >
-              <h1>Files</h1>
-              <Table sortable size='medium'  >
-                
-              
-                
+              <Table sortable size='small'  >
                 <TableHeader className='bg-stone-700' >
                     <TableRow>
                     <TableHeaderCell  onClick={() => handleSort('name')} 
@@ -162,7 +155,7 @@ const getFileSizeString = (size) => {
                 </TableHeader>
                 <TableBody>
                   {sortedFiles.map((file) => (
-                    <TableRow key={file.name} >
+                    <TableRow key={file.name} className='p-1 hover:bg-blue-200 hover:text-slate-900 hover:cursor-pointer'>
                       <TableCell className='break-words'>{file.name}</TableCell>
                       <TableCell>{getFileSizeString(file.size)}</TableCell>
                       <TableCell>

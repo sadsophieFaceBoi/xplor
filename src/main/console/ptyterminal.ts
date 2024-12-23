@@ -1,8 +1,8 @@
 import * as pty from 'node-pty'
 import { BrowserWindow, ipcMain, IpcMainInvokeEvent } from 'electron'
 const shell = 'C:\\Program Files\\Git\\bin\\bash.exe'
-const cols = 80 // default column size
-const rows = 24 // default row size
+const cols = 100 // default column size
+const rows = 100 // default row size
 let mainWindow: BrowserWindow | null = null
 const terminals: PtyTerminal[] = []
 const spawnNewTerminal = (w: BrowserWindow): number => {

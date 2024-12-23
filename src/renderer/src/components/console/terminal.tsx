@@ -14,6 +14,7 @@ export const TerminalComponent: React.FC = () => {
   const [termId, setTermId] = useState(-1)
   const [systemInfo, setSystemInfo] = useState<ISystem | null>(null)
   const [userComputer, setUserComputer] = useState('')
+  const [fit, setFit] = useState<FitAddon|null>(null)
   let directoryChangedExternally = false
   const setWorkingDirectory = (data: string|unknown): void => {
     if (directoryChangedExternally) {
@@ -52,7 +53,9 @@ export const TerminalComponent: React.FC = () => {
   useEffect(() => {
     if (!systemInfo) return
     if (terminal) return
-    const t = new Terminal({ cols: 80 })
+   
+    const t = new Terminal()
+    
     
     setTerminal(t)
   }, [systemInfo])
@@ -69,14 +72,19 @@ export const TerminalComponent: React.FC = () => {
     const fitAddon = new FitAddon()
 
     if (terminal) {
-      terminal.loadAddon(fitAddon)
-      terminal.clear()
+     
     }
     if (terminalRef.current && terminal) {
       const id = await loadBackendTerminal()
-      terminal?.open(terminalRef.current)
-      fitAddon.fit()
-      terminal?.onData((data: string) => {
+      terminal.loadAddon(fitAddon)
+      terminal.clear()
+      terminal.open(terminalRef.current)
+    
+      
+      fitAddon.activate(terminal)
+     fitAddon.fit()
+     setFit(fitAddon)
+      terminal.onData((data: string) => {
      
         ptyApi.writeToTerminal(data, id)
       })
@@ -85,6 +93,7 @@ export const TerminalComponent: React.FC = () => {
         writeStreamToTerminal(data?.toString() || '')
       })
       setLoaded(true)
+      embiggen()
     }
   }
 
@@ -122,28 +131,40 @@ export const TerminalComponent: React.FC = () => {
    
       }
     }, 200)
-    // if (regex.test(data) && userComputer !== '') {
-    //   console.log('found user computer:', userComputer)
-    //   const fields = data.split('[')
-    //   //get the field that starts with 33m
-    //   let field = fields.find((f) => f.startsWith('33m'))
-    //   if (!field) {
-    //     return
-    //   }
-    //   field = field.split('[')[0].replace('', '').replace('33m', '').trim()
-    //   const path = field
-    //   const homePath = systemInfo?.homedir || ''
-    //   const updatedPath = path.replace(/^~/, homePath).replace(/\//g, '\\').replace('$', '').trim()
-    //   console.log('updated path:', updatedPath)
-    //   setWorkingDirectory(updatedPath)
-    // }
+  }
+  const embiggen=()=>{
+    
+      console.log('fitting')
+      fit?.fit()
+   
   }
 
+  useEffect(() => {
+    const handleResize = (entries: ResizeObserverEntry[]) => {
+      for (let entry of entries) {
+        const { width, height } = entry.contentRect;
+        console.log('Width:', width, 'Height:', height);
+        // Call your function here
+        embiggen();
+      }
+     
+    };
+
+    const resizeObserver = new ResizeObserver(handleResize);
+    if (terminalRef.current) {
+      resizeObserver.observe(terminalRef.current);
+    }
+
+    return () => {
+      if (terminalRef.current) {
+        resizeObserver.unobserve(terminalRef.current);
+      }
+    };
+  }, [fit]);
+
   return (
-    <div>
-      <div id="terminal" className="xterm" ref={terminalRef} style={{ textAlign: 'left' }} />
+    <div className='  h-full w-full border-2 place-content-stretch border-red-400 '>
+      <div  id="terminal" className="xterm border-2 border-green-400 " ref={terminalRef}  style={{height:"100%"}}/>
     </div>
   )
 }
-
-
