@@ -1,6 +1,7 @@
 import { DirectoryInfo, FileInfo, IFileApi } from "../types/file-models"
 import * as fs from 'fs';
 import * as path from 'path';
+
 export const convertWindowsPathToUnixPath = (windowsPath: string): string => {
   
   const unixPath = windowsPath
@@ -57,8 +58,10 @@ export const getFilesInDirectory = (directoryPath: string): Promise<FileInfo[]> 
 
     return Promise.resolve(files);
 };
+
 export const fileApi: IFileApi = {
     getSubDirectories,
-    getFilesInDirectory
+    getFilesInDirectory,
+    
 };
   

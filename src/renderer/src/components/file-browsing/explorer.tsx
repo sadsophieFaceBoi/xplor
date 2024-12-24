@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Split from 'react-split';
-import { TableHeaderCell, TableSortDirection } from '@fluentui/react-components';
+import { Button, TableCellActions, TableHeaderCell } from '@fluentui/react-components';
 
 import { DirectoryInfo, FileInfo } from 'types/file-models';
 import { fileRendererApi } from './file-api';
@@ -15,7 +15,7 @@ const FileExplorer = () => {
   const [filteredFiles, setFilteredFiles] = useState<FileInfo[]>([])
   const [filteredDirectories, setFilteredDirectories] = useState<DirectoryInfo[]>([])
   const [sortColumn, setSortColumn] = useState<string | null>(null);
-  const [sortDirection, setSortDirection] = useState<TableSortDirection>('ascending');
+  const [sortDirection, setSortDirection] = useState('ascending');
   //loads the contents of the current directory
   const loadDirectoryContents = async (directory: string) => {
     const [f, d] = await Promise.all([
@@ -84,8 +84,14 @@ const moveFile = (fileName, targetDirectory) => {
   // Implement file move logic here
 };
 
-const openFile = (fileName) => {
+const openFile = (fileName:string,asText:boolean) => {
   // Implement file open logic here
+  console.log('openFile', `${currentDirectory}\\${fileName}`);
+  if(asText){
+    fileRendererApi.openFile(`${currentDirectory}\\${fileName}`,"notepad.exe");
+    return
+  }
+  fileRendererApi.openFile(`${currentDirectory}\\${fileName}`);
 };
 
 const deleteFile = (fileName) => {
@@ -110,6 +116,7 @@ const getFileSizeString = (size) => {
   return (
    
       <div className="flex flex-col flex-grow h-full w-full m-2 p-2">
+        <h1>File Explorer</h1>
         <input
                 type="text"
                 placeholder="Search..."
@@ -126,7 +133,9 @@ const getFileSizeString = (size) => {
             className='flex-grow flex h-full w-full'
         
           >
-            <div>              
+            <div>
+              <h1>Directories</h1>
+              
               {filteredDirectories.map((dir) => (
                 <div
                   key={dir.name}
@@ -138,7 +147,11 @@ const getFileSizeString = (size) => {
               ))}
             </div>
             <div  >
-              <Table sortable size='small'  >
+              <h1>Files</h1>
+              <Table sortable size='medium'  >
+                
+              
+                
                 <TableHeader className='bg-stone-700' >
                     <TableRow>
                     <TableHeaderCell  onClick={() => handleSort('name')} 
@@ -155,8 +168,14 @@ const getFileSizeString = (size) => {
                 </TableHeader>
                 <TableBody>
                   {sortedFiles.map((file) => (
-                    <TableRow key={file.name} className='p-1 hover:bg-blue-200 hover:text-slate-900 hover:cursor-pointer'>
-                      <TableCell className='break-words'>{file.name}</TableCell>
+                    <TableRow key={file.name} onClick={() => openFile(file.name,false)}>
+                      <TableCell className='break-words'>
+                        <TableCellActions>
+                          <Button  onClick={(e) => { e.stopPropagation(); openFile(file.name, true); }}>Open as text</Button>
+                         
+                        </TableCellActions>
+                        {file.name} 
+                      </TableCell>
                       <TableCell>{getFileSizeString(file.size)}</TableCell>
                       <TableCell>
                         {file.dateModified.toLocaleDateString()} {file.dateModified.toLocaleTimeString()}

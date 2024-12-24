@@ -11,4 +11,5 @@ export interface DirectoryInfo {
 export interface IFileApi {
     getSubDirectories(directoryPath: string): Promise<DirectoryInfo[]>;
     getFilesInDirectory(directoryPath: string): Promise<FileInfo[]>;
+  
 }
