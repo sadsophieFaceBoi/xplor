@@ -16,7 +16,7 @@ class PtyTerminal {
   private mainWindow: BrowserWindow | null = null
   private ptyProcess: pty.IPty | null = null
   private id: number
-  private directorySent: boolean = false
+
 
   constructor(mainWindow: BrowserWindow, id: number) {
     this.mainWindow = mainWindow

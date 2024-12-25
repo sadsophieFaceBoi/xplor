@@ -1,19 +1,21 @@
 appId: com.electron.app
-productName: vite-ts-1
+productName: xplor
 directories:
   buildResources: build
 files:
   - '!**/.vscode/*'
-  - '!src/*'
+  - 'src/*'
   - '!electron.vite.config.{js,ts,mjs,cjs}'
   - '!{.eslintignore,.eslintrc.cjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
   - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
   - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
-  - 'src/renderer/src/assets/**/*' 
+  - 'src/renderer/src/assets/**/*'
+  - 'out/**/*' 
+
 asarUnpack:
   - resources/**
 win:
-  executableName: vite-ts-1
+  executableName: xplor
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}

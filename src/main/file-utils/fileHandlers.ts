@@ -16,13 +16,13 @@ import { exec } from "child_process";
 
 
 export const registerFileHandlers = () => {
-  ipcMain.handle('get-files-in-folder', (event: Electron.IpcMainInvokeEvent, folder: string): Promise<FileInfo[]> => {
+  ipcMain.handle('get-files-in-folder', (_event: Electron.IpcMainInvokeEvent, folder: string): Promise<FileInfo[]> => {
     return fileApi.getFilesInDirectory(folder)
   })
-ipcMain.handle('get-folder-sub-directories', (event: Electron.IpcMainInvokeEvent, folder: string): Promise<DirectoryInfo[]> => {
+ipcMain.handle('get-folder-sub-directories', (_event: Electron.IpcMainInvokeEvent, folder: string): Promise<DirectoryInfo[]> => {
     return fileApi.getSubDirectories(folder)
   })
-  ipcMain.handle('open-file', (event: Electron.IpcMainInvokeEvent, file: string,appName?:string): void => {
+  ipcMain.handle('open-file', (_event: Electron.IpcMainInvokeEvent, file: string,appName?:string): void => {
     openFile(file,appName)
   })
 }

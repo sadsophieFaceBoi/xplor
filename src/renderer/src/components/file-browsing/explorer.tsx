@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import Split from 'react-split';
 import { Button, TableCellActions, TableHeaderCell } from '@fluentui/react-components';
 
@@ -22,14 +22,14 @@ const FileExplorer = () => {
       fileRendererApi.getFilesInDirectory(directory),
       fileRendererApi.getSubDirectories(directory)
     ])
-    let changed:boolean=false
+   
     if (JSON.stringify(f) !== JSON.stringify(files)) {
       setFiles(f);
-      changed=true
+
     }
     if (JSON.stringify(d) !== JSON.stringify(directories)) {
       setDirectories(d);
-      changed=true
+   
     }
   }
   //called when the current directory
@@ -80,23 +80,18 @@ const FileExplorer = () => {
     return 0;
   });
 
-const moveFile = (fileName, targetDirectory) => {
-  // Implement file move logic here
-};
+
 
 const openFile = (fileName:string,asText:boolean) => {
   // Implement file open logic here
   console.log('openFile', `${currentDirectory}\\${fileName}`);
   if(asText){
-    fileRendererApi.openFile(`${currentDirectory}\\${fileName}`,"notepad.exe");
+    fileRendererApi.openFile(`${currentDirectory}\\${fileName}`,"notepad++.exe");
     return
   }
   fileRendererApi.openFile(`${currentDirectory}\\${fileName}`);
 };
 
-const deleteFile = (fileName) => {
-  // Implement file delete logic here
-};
 
 const getFileSizeString = (size) => {
   if (size < 1024) {

@@ -1,5 +1,4 @@
-import Versions from './components/Versions'
-import electronLogo from './assets/electron.svg'
+
 import { TerminalComponent } from './components/console/terminal'
 import { DirectoryProvider } from './context/DirectoryContext'
 import FileExplorer from './components/file-browsing/explorer'
@@ -7,7 +6,6 @@ import Split from 'react-split'
 import React from 'react';
 
 function App(): JSX.Element {
-  const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
 
   return (
     <>

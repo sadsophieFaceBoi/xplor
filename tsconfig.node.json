@@ -9,6 +9,7 @@
   ],
   "compilerOptions": {
     "composite": true,
+    "outDir": "out",
     "types": ["electron-vite/node"
   ],
   "baseUrl": ".",
