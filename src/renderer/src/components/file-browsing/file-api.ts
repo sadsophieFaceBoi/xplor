@@ -12,6 +12,9 @@ interface IFileRendererApi extends IFileApi {
     },
     openFile: (file: string,appName?:string): void => {
          window.electron.ipcRenderer.invoke('open-file', file,appName)
-    }
+    },
+    getParentDirectory(directoryPath): Promise<string> {
+        return window.electron.ipcRenderer.invoke('get-parent-directory', directoryPath)
+    },
    
   }

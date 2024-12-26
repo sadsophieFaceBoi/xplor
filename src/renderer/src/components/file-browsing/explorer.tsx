@@ -18,7 +18,9 @@ const FileExplorer = () => {
   const [sortDirection, setSortDirection] = useState('ascending');
   //loads the contents of the current directory
   const loadDirectoryContents = async (directory: string) => {
+
     const [f, d] = await Promise.all([
+      
       fileRendererApi.getFilesInDirectory(directory),
       fileRendererApi.getSubDirectories(directory)
     ])
@@ -41,7 +43,7 @@ const FileExplorer = () => {
     setSearchTerm('')
     loadDirectoryContents(currentDirectory)
     const interval = setInterval(() => {
-       loadDirectoryContents(currentDirectory)
+      // loadDirectoryContents(currentDirectory)
     }, 2000)
     return () => clearInterval(interval)
   }, [sender,currentDirectory])

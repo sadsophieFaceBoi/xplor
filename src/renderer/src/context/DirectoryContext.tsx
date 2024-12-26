@@ -14,10 +14,12 @@ export const DirectoryProvider = ({ children }: { children: ReactNode }): JSX.El
   const [sender, setSender] = useState<string>('')
 
   const setCurrentDirectory = (directory: string, sender: string): void => {
+   
     if (directory.startsWith('/')) {
+
       directory = convertUnixPathToWindowsPath(directory)
     }
-    console.log('setting directory:', directory)
+    
     setSender(sender)
     setCurrentDirectoryState(directory)
   }

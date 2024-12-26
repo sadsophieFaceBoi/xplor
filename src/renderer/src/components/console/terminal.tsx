@@ -2,13 +2,15 @@ import { useEffect, useRef, useState } from 'react'
 import { Terminal } from 'xterm'
 import { FitAddon } from 'xterm-addon-fit'
 import 'xterm/css/xterm.css'
-import { convertWindowsPathToUnixPath } from '../../../../utils/file-utils'
+import { convertUnixPathToWindowsPath, convertWindowsPathToUnixPath } from '../../../../utils/file-utils'
 import { useDirectory } from '../../context/DirectoryContext'
 import { ptyApi } from './terminal-api'
+import { dir } from 'console'
 
 export const TerminalComponent: React.FC = () => {
   const terminalRef = useRef<HTMLDivElement>(null)
   const { currentDirectory, setCurrentDirectory, sender } = useDirectory()
+  const[terminalDirectory, setTerminalDirectory] = useState<string>('')
   const [terminal, setTerminal] = useState<Terminal | null>(null)
   const [loaded, setLoaded] = useState(false)
   const [termId, setTermId] = useState(-1)
@@ -31,17 +33,35 @@ export const TerminalComponent: React.FC = () => {
   }, [])
   useEffect(() => {
     if (terminal && sender !== 'terminal') {
-      console.log('setting working directory:', currentDirectory)
+      
       const unixPath = convertWindowsPathToUnixPath(currentDirectory)
       //replace the homedir with ~
       let homePath = systemInfo?.homedir || ''
       homePath = convertWindowsPathToUnixPath(homePath)
-      const updatedPath = unixPath.replace(homePath, '~')
-      console.log('setting :', currentDirectory)
-      ptyApi.writeToTerminal(` cd ${updatedPath}\r`, termId)
+      const updatedPath = unixPath
       directoryChangedExternally = true
+
+      //if the path contains spaces, wrap it in quotes to avoid issues, 
+      
+      if (updatedPath.includes(' ')) {
+        ptyApi.writeToTerminal(` cd "${updatedPath}"\r`, termId)
+      } else {
+        ptyApi.writeToTerminal(` cd ${updatedPath}\r`, termId)
+      }
+      
+      
     }
   }, [currentDirectory, terminal, sender])
+  useEffect(() => {
+    console.log('terminal directory changed to:', terminalDirectory)
+    console.log('current directory:', currentDirectory)
+    const winDir=convertUnixPathToWindowsPath(terminalDirectory)
+    if(winDir!==currentDirectory){
+      console.log('setting current directory to:', winDir)
+      setCurrentDirectory(winDir, 'terminal')
+    }
+  
+  },[terminalDirectory])
   const loadSysInfo = async (): Promise<void> => {
     if (systemInfo != null) return
     const d = await window.system.getSystemInfo()
@@ -109,12 +129,13 @@ export const TerminalComponent: React.FC = () => {
     //search pattern should be [32muser@computer
     const pattern = `\\[32m\\s*.*${userComputer}`
     const regex = new RegExp(pattern, 'i')
-   
+    
     setTimeout(() => {
 
       if (regex.test(data) && userComputer !== '') {
-       
+     
         const fields = data.split('[')
+     
         //get the field that starts with 33m
         let field = fields.find((f) => f.startsWith('33m'))
         if (!field) {
@@ -123,9 +144,13 @@ export const TerminalComponent: React.FC = () => {
         field = field.split('[')[0].replace('', '').replace('33m', '').trim()
         const path = field
         const homePath = systemInfo?.homedir || ''
-        const updatedPath = path.replace(/^~/, homePath).replace(/\//g, '\\').replace('$', '').trim()
-      
-        setWorkingDirectory(updatedPath)
+
+        const termDir=convertWindowsPathToUnixPath(path).replace('~',convertWindowsPathToUnixPath(homePath))
+        //const updatedPath = convertWindowsPathToUnixPath(path).replace(convertWindowsPathToUnixPath(homePath), '~')
+        setTerminalDirectory(termDir)
+        //check if the path is different from the current directory
+        console.log('last sender', sender)
+       
       }
       else {
    

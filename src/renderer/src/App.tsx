@@ -4,6 +4,7 @@ import { DirectoryProvider } from './context/DirectoryContext'
 import FileExplorer from './components/file-browsing/explorer'
 import Split from 'react-split'
 import React from 'react';
+import DirectoryBrowsing from './components/file-browsing/directory-browsing';
 
 function App(): JSX.Element {
 
@@ -27,7 +28,7 @@ const MainLayout: React.FC = () => {
       </div>
       <Split sizes={[10, 80, 10]} minSize={100} className='flex flex-grow h-5/6  w-full' gutterSize={10}>
         <div className='border-blue-400 border-2'>
-          <h1 className="text-3xl font-bold underline">Left</h1>
+          <DirectoryBrowsing/>
         </div>
 
           <Split direction='vertical' sizes={[50, 50]} minSize={100} className=' h-full ' gutterSize={10}>

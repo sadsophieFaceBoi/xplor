@@ -26,5 +26,8 @@ ipcMain.handle('get-folder-sub-directories', (_event: Electron.IpcMainInvokeEven
     openFile(file,appName)
   })
 }
+ipcMain.handle('get-parent-directory', (_event: Electron.IpcMainInvokeEvent, directory: string): Promise<string> => {
+    return fileApi.getParentDirectory(directory)
+  }
 
-
+)
