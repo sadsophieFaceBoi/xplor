@@ -41,6 +41,9 @@ const fileRendererApi: IFileApi = {
   },
   getSubDirectories: (folder: string): Promise<DirectoryInfo[]> => {
       return window.Electron.ipcRenderer.invoke('get-folder-sub-directories', folder)
+  },
+  getParentDirectory: (folder: string): Promise<string> => {
+      return window.Electron.ipcRenderer.invoke('get-parent-directory', folder)
   }
 }
 contextBridge.exposeInMainWorld('fileApi', fileRendererApi)

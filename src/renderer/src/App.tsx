@@ -22,7 +22,7 @@ function App(): JSX.Element {
 }
 const MainLayout: React.FC = () => {
   return (
-    <div className='flex flex-col h-screen w-screen  p-3 '>
+    <div className='flex flex-col h-screen w-screen  p-3  '>
       <div className='w-screen h-auto text-center'>
         <h1 className="text-3xl font-bold underline">Tool Bar</h1>
       </div>

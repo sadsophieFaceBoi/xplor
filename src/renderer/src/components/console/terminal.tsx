@@ -5,7 +5,7 @@ import 'xterm/css/xterm.css'
 import { convertUnixPathToWindowsPath, convertWindowsPathToUnixPath } from '../../../../utils/file-utils'
 import { useDirectory } from '../../context/DirectoryContext'
 import { ptyApi } from './terminal-api'
-import { dir } from 'console'
+
 
 export const TerminalComponent: React.FC = () => {
   const terminalRef = useRef<HTMLDivElement>(null)
@@ -17,15 +17,15 @@ export const TerminalComponent: React.FC = () => {
   const [systemInfo, setSystemInfo] = useState<ISystem | null>(null)
   const [userComputer, setUserComputer] = useState('')
   const [fit, setFit] = useState<FitAddon|null>(null)
-  let directoryChangedExternally = false
-  const setWorkingDirectory = (data: string|unknown): void => {
-    if (directoryChangedExternally) {
-      directoryChangedExternally = false
-      return
-    }
-    const d = data?.toString() || ''
-    setCurrentDirectory(d, 'terminal')
-  }
+ 
+  // const setWorkingDirectory = (data: string|unknown): void => {
+  //   if (directoryChangedExternally) {
+  //     directoryChangedExternally = false
+  //     return
+  //   }
+  //   const d = data?.toString() || ''
+  //   setCurrentDirectory(d, 'terminal')
+  // }
   useEffect(() => {
     if (terminal) return
     loadSysInfo()
@@ -39,7 +39,7 @@ export const TerminalComponent: React.FC = () => {
       let homePath = systemInfo?.homedir || ''
       homePath = convertWindowsPathToUnixPath(homePath)
       const updatedPath = unixPath
-      directoryChangedExternally = true
+    
 
       //if the path contains spaces, wrap it in quotes to avoid issues, 
       

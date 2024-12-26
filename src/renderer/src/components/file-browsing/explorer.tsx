@@ -36,9 +36,7 @@ const FileExplorer = () => {
   }
   //called when the current directory
   useEffect(() => {
-    if(sender === 'explorer'){    
-      return
-    }
+    
     if (!currentDirectory) return
     setSearchTerm('')
     loadDirectoryContents(currentDirectory)
