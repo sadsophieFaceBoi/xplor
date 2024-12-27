@@ -56,7 +56,7 @@ export const TerminalComponent: React.FC = () => {
     console.log('terminal directory changed to:', terminalDirectory)
     console.log('current directory:', currentDirectory)
     const winDir=convertUnixPathToWindowsPath(terminalDirectory)
-    if(winDir!==currentDirectory){
+    if (winDir.replace(/\\$/, '') !== currentDirectory.replace(/\\$/, '')) {
       console.log('setting current directory to:', winDir)
       setCurrentDirectory(winDir, 'terminal')
     }

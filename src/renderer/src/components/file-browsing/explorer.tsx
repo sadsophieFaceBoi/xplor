@@ -1,6 +1,6 @@
 import  { useEffect, useState } from 'react';
 import Split from 'react-split';
-import { Button, TableCellActions, TableHeaderCell } from '@fluentui/react-components';
+import { Button, TableCellActions, TableHeaderCell, Breadcrumb, BreadcrumbItem, BreadcrumbButton, BreadcrumbDivider } from '@fluentui/react-components';
 
 import { DirectoryInfo, FileInfo } from 'types/file-models';
 import { fileRendererApi } from './file-api';
@@ -19,17 +19,14 @@ const FileExplorer = () => {
   //loads the contents of the current directory
   const loadDirectoryContents = async (directory: string) => {
 
-    const [f, d] = await Promise.all([
-      
-      fileRendererApi.getFilesInDirectory(directory),
-      fileRendererApi.getSubDirectories(directory)
-    ])
    
-    if (JSON.stringify(f) !== JSON.stringify(files)) {
+    const f=await fileRendererApi.getFilesInDirectory(directory);
+   const d= await fileRendererApi.getSubDirectories(directory);
+    if (f && JSON.stringify(f) !== JSON.stringify(files)) {
       setFiles(f);
 
     }
-    if (JSON.stringify(d) !== JSON.stringify(directories)) {
+    if (d &&JSON.stringify(d) !== JSON.stringify(directories)) {
       setDirectories(d);
    
     }
@@ -108,10 +105,38 @@ const getFileSizeString = (size) => {
   //if greater than 1024 GB convert to TB
   return (size / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
 }
+
+const handleBreadcrumbClick = (path: string) => {
+
+  setCurrentDirectory(path+"\\", 'breadcrumb');
+};
+
+const renderBreadcrumb = () => {
+  const pathParts = currentDirectory.split('\\');
+  return (
+    <Breadcrumb>
+      {pathParts.map((part, index) => {
+        const path = pathParts.slice(0, index + 1).join('\\');
+        return (
+            <>
+            <BreadcrumbItem key={path}>
+            <BreadcrumbButton onClick={() => handleBreadcrumbClick(path)}>
+              {part }
+            </BreadcrumbButton>
+            </BreadcrumbItem>
+            {index < pathParts.length - 1 && <BreadcrumbDivider />}
+            </>
+        );
+      })}
+    </Breadcrumb>
+  );
+};
+
   return (
    
       <div className="flex flex-col flex-grow h-full w-full m-2 p-2">
         <h1>File Explorer</h1>
+        {renderBreadcrumb()}
         <input
                 type="text"
                 placeholder="Search..."

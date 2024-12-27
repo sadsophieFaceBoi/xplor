@@ -58,13 +58,17 @@ export const getFilesInDirectory = (directoryPath: string): Promise<FileInfo[]> 
     items.forEach(item => {
         if (item.isFile()) {
             const fullPath = path.join(directoryPath, item.name);
-            const stats = fs.statSync(fullPath);
-            files.push({
-                name: item.name,
-                type: path.extname(item.name),
-                dateModified: stats.mtime,
-                size: stats.size
-            });
+            try {
+              const stats = fs.statSync(fullPath);
+              files.push({
+                  name: item.name,
+                  type: path.extname(item.name),
+                  dateModified: stats.mtime,
+                  size: stats.size
+              });
+            } catch (err) {
+                //console.error(`Access denied to file: ${fullPath}`, err);
+            }
         }
     });
 
