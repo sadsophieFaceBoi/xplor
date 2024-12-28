@@ -31,6 +31,7 @@ export const TerminalComponent: React.FC = () => {
     loadSysInfo()
     
   }, [])
+  
   useEffect(() => {
     if (terminal && sender !== 'terminal') {
       
@@ -53,11 +54,10 @@ export const TerminalComponent: React.FC = () => {
     }
   }, [currentDirectory, terminal, sender])
   useEffect(() => {
-    console.log('terminal directory changed to:', terminalDirectory)
-    console.log('current directory:', currentDirectory)
+
     const winDir=convertUnixPathToWindowsPath(terminalDirectory)
     if (winDir.replace(/\\$/, '') !== currentDirectory.replace(/\\$/, '')) {
-      console.log('setting current directory to:', winDir)
+
       setCurrentDirectory(winDir, 'terminal')
     }
   
@@ -88,6 +88,17 @@ export const TerminalComponent: React.FC = () => {
     setTermId(id)
     return id
   }
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+      console.log('key pressed:',event.key)
+      console.log(event.key)
+      if (event.key === 'Tab') {
+        console.log('tab pressed')
+        event.preventDefault()
+        terminalRef.current?.focus()
+        terminal?.focus()
+ 
+      }
+    };
   const initTerminal = async (): Promise<void> => {
     const fitAddon = new FitAddon()
 
@@ -100,7 +111,10 @@ export const TerminalComponent: React.FC = () => {
       terminal.clear()
       terminal.open(terminalRef.current)
     
-      
+     
+   
+   
+
       fitAddon.activate(terminal)
      fitAddon.fit()
      setFit(fitAddon)
@@ -112,6 +126,7 @@ export const TerminalComponent: React.FC = () => {
 
         writeStreamToTerminal(data?.toString() || '')
       })
+      ptyApi.writeToTerminal('cd ~\r', id)
       setLoaded(true)
       embiggen()
     }
@@ -149,7 +164,7 @@ export const TerminalComponent: React.FC = () => {
         //const updatedPath = convertWindowsPathToUnixPath(path).replace(convertWindowsPathToUnixPath(homePath), '~')
         setTerminalDirectory(termDir)
         //check if the path is different from the current directory
-        console.log('last sender', sender)
+  
        
       }
       else {
@@ -159,7 +174,7 @@ export const TerminalComponent: React.FC = () => {
   }
   const embiggen=()=>{
     
-      console.log('fitting')
+  
       fit?.fit()
    
   }
@@ -167,8 +182,8 @@ export const TerminalComponent: React.FC = () => {
   useEffect(() => {
     const handleResize = (entries: ResizeObserverEntry[]) => {
       for (let entry of entries) {
-        const { width, height } = entry.contentRect;
-        console.log('Width:', width, 'Height:', height);
+       
+      
         // Call your function here
         embiggen();
       }
@@ -188,8 +203,8 @@ export const TerminalComponent: React.FC = () => {
   }, [fit]);
 
   return (
-    <div className='  h-full w-full border-2 place-content-stretch border-red-400 '>
-      <div  id="terminal" className="xterm border-2 border-green-400 " ref={terminalRef}  style={{height:"100%"}}/>
+    <div id='t-container' className='  h-full w-full border-2 place-content-stretch border-red-400 '>
+      <div onKeyDown={(event)=>handleKeyDown(event)} onKeyDownCapture={handleKeyDown}  id="terminal" className="xterm border-2 border-green-400 " ref={terminalRef}  style={{height:"100%"}}  tabIndex={0}/>
     </div>
   )
 }

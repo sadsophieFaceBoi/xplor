@@ -91,7 +91,7 @@ const handleDirectoryChanged = async (d: string) => {
     paths.push(d);
   
     setExpandedDirectories(paths);
-    console.log(newDirs);
+
     const newDirectories = newDirs.filter(subDir => !directories.some(d => d.fullPath.toLowerCase() === subDir.fullPath.toLowerCase()));
     setDirectories([...directories, ...newDirectories]);
     //iterate through the paths and expand the directories
@@ -135,7 +135,7 @@ const renderDirectories = ( parentPath: string ) => {
     });
 };
 
-  return <div className='h-full overflow-y-auto' id="browser">{renderDirectories('C:\\')}</div>;
+  return <div className='h-full overflow-y-auto' id="browser" tabIndex={3}>{renderDirectories('C:\\')}</div>;
 };
 
 export default DirectoryBrowsing;

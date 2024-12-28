@@ -7,7 +7,7 @@ export const ptyApi: IPtyEvents = {
     window.electron.ipcRenderer.on(channel, (_event, ...args) => func(...args))
   },
   spawn: (): Promise<number> => {
-    console.log('spawn terminal')
+
     return window.electron.ipcRenderer.invoke('spawn-terminal')
   },
   getWorkingDirectory: (id: number) => {
