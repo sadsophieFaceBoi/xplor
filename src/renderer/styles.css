@@ -1,0 +1,85 @@
+/* filepath: /c:/Users/andrewmu/source/repos/personal/xplor/src/renderer/styles.css */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+.title-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #292929;
+  color: white;
+  padding: 2px;
+  height: fit-content;
+  -webkit-app-region: drag; /* Make the title bar draggable */
+}
+
+.title {
+  font-size: 30px;
+}
+
+.window-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.window-controls button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  -webkit-app-region: no-drag; /* Make the buttons non-draggable */
+}
+
+.window-controls button:hover {
+  background-color: #555;
+}
+
+/* Universal scrollbar styles */
+/* WebKit-based browsers */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 6px; /* Rounded track */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 6px; /* Rounded thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1;
+}
+
+*::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 6px; /* Rounded track */
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 6px; /* Rounded thumb */
+  border: 3px solid #f1f1f1;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}

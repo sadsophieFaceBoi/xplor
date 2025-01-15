@@ -151,7 +151,15 @@ const renderBreadcrumb = () => {
             gutterSize={10}
             direction='horizontal'
             className='flex-grow flex h-full w-full'
-        
+            gutterStyle={(index, direction) => ({
+              backgroundColor: 'white',
+              cursor: 'col-resize',
+              width: '1px',
+              margin: '0 5px',
+              hover: {
+                backgroundColor: 'lightblue',
+              },
+            })}
           >
             <div>
               <h1>Directories</h1>

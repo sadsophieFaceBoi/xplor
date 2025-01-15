@@ -203,8 +203,8 @@ export const TerminalComponent: React.FC = () => {
   }, [fit]);
 
   return (
-    <div id='t-container' className='  h-full w-full border-2 place-content-stretch border-red-400 '>
-      <div onKeyDown={(event)=>handleKeyDown(event)} onKeyDownCapture={handleKeyDown}  id="terminal" className="xterm border-2 border-green-400 " ref={terminalRef}  style={{height:"100%"}}  tabIndex={0}/>
+    <div id='t-container' className='  h-full w-full border-2 place-content-stretch  '>
+      <div onKeyDown={(event)=>handleKeyDown(event)} onKeyDownCapture={handleKeyDown}  id="terminal" className="xterm border-2  " ref={terminalRef}  style={{height:"100%"}}  tabIndex={0}/>
     </div>
   )
 }
