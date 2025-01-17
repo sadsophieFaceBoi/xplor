@@ -134,7 +134,7 @@ const renderBreadcrumb = () => {
 
   return (
    
-      <div className="flex flex-col flex-grow h-full w-full m-2 p-2">
+      <div className="flex flex-col flex-grow h-full w-full  p-2">
         <h1>File Explorer</h1>
         {renderBreadcrumb()}
         <input

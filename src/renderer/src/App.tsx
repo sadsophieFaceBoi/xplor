@@ -49,7 +49,7 @@ const MainLayout: React.FC = () => {
     <div className='flex flex-col h-screen w-screen  p-2  '>
      
       <Split sizes={[20, 80]} minSize={100} className='flex flex-grow h-5/6  w-full' gutterSize={10}>
-        <div className=''>
+        <div className='bg-zinc-900 rounded-lg'>
           <DirectoryBrowsing/>
         </div>
 
@@ -57,7 +57,7 @@ const MainLayout: React.FC = () => {
             <div className='bg-zinc-900 rounded-lg'>
               <FileExplorer />
             </div>
-            <div className=''>
+            <div className='rounded-lg'>
               <TerminalComponent />
             </div>
           </Split>
