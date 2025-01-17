@@ -8,5 +8,6 @@ declare global {
       getSystemInfo: () => Promise<ISystem>
     }
     fileApi: IFileApi
+
   }
 }

@@ -17,3 +17,21 @@
 .directory:hover, .file:hover {
   background-color: #f0f0f0;
 }
+.gutter {
+  background-color: white;
+  cursor: col-resize;
+    width: 2px;
+    margin: 0 5px;
+
+}
+
+.gutter-horizontal {
+  
+  width: 1px;
+  margin: 0 5px;
+}
+.gutter:hover {
+  background-color: grey;
+  cursor: col-resize;
+
+}

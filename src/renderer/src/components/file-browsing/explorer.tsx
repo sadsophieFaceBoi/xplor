@@ -134,7 +134,7 @@ const renderBreadcrumb = () => {
 
   return (
    
-      <div className="flex flex-col flex-grow h-full w-full m-2 p-2">
+      <div className="flex flex-col flex-grow h-full w-full  p-2">
         <h1>File Explorer</h1>
         {renderBreadcrumb()}
         <input
@@ -151,7 +151,15 @@ const renderBreadcrumb = () => {
             gutterSize={10}
             direction='horizontal'
             className='flex-grow flex h-full w-full'
-        
+            gutterStyle={(index, direction) => ({
+              backgroundColor: 'white',
+              cursor: 'col-resize',
+              width: '1px',
+              margin: '0 5px',
+              hover: {
+                backgroundColor: 'lightblue',
+              },
+            })}
           >
             <div>
               <h1>Directories</h1>

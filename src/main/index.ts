@@ -8,14 +8,18 @@ import { registerFileHandlers } from './file-utils/fileHandlers'
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+    width: 800,
+    height: 600,
     show: false,
+    frame: false, // Disable the default title bar
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
-      sandbox: false
+      sandbox: false,
+      contextIsolation: true,
+     
+      nodeIntegration: false,
     }
   })
 
@@ -36,7 +40,27 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
- mainWindow.webContents.openDevTools()
+ //mainWindow.webContents.openDevTools()
+
+  ipcMain.on('minimize-window', () => {
+    console.log('minimize')
+    mainWindow.minimize();
+  });
+
+  ipcMain.on('maximize-window', () => {
+  
+    if (mainWindow.isMaximized()) {
+      console.log('unmaximize')
+      mainWindow.unmaximize();
+    } else {
+      console.log('maximize')
+      mainWindow.maximize();
+    }
+  });
+
+  ipcMain.on('close-window', () => {
+    mainWindow.close();
+  });
 }
 
 // This method will be called when Electron has finished
