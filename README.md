@@ -1,6 +1,6 @@
-# vite-ts-1
+# XPlor
 
-An Electron application with React and TypeScript
+A developers file explorer with Xterm js based integrated git bash terminal. File explorer directory responds to changes triggered by the terminal and vice versa. 
 
 ## Recommended IDE Setup
 
